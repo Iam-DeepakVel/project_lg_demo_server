@@ -18,6 +18,11 @@ export const registerUser = async ({
   phone,
   referralToken,
 }) => {
+   const existingUser = await findUserByEmail(email);
+   if(existingUser) {
+    throw new Error("User already exists");
+   }
+
   const hashedPassword = await bcrypt.hash(password, 10);
   const newReferralCode = await generateReferralCode();
 
@@ -55,13 +60,13 @@ export const loginUser = async ({ email, password, referralToken }) => {
   console.log(user);
   if (!user) throw new Error("Invalid credentials");
 
-  const isMatch = bcrypt.compare(password, user.password);
+  const isMatch = await bcrypt.compare(password, user.password);
   console.log(isMatch);
   if (!isMatch) throw new Error("Invalid credentials");
 
   if (referralToken) {
     try {
-      const decoded = jwt.verify(referralToken, process.env.JWT_SECRET);
+      const decoded = await jwt.verify(referralToken, process.env.JWT_SECRET);
       const referrerId = decoded.referrerId;
 
       console.log(user._id.toString(), referrerId.toString());

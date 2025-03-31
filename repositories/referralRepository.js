@@ -25,8 +25,15 @@ export const getReferralEnrollments = async (referrerId) => {
 export const logReferral = async (referrerId, referredUser) => {
     console.log(referrerId, referredUser);
     try {
-      await Referral.create({ referrer: referrerId, ...referredUser });
+      const existingReferral = await Referral.findOne({ 
+        referrer: referrerId,
+        referredUser: referredUser.referredUser
+      });
+
+      if (!existingReferral) {
+        await Referral.create({ referrer: referrerId, ...referredUser });
+      }
     } catch (err) {
       console.error("Error logging referral:", err);
     }
-  };
+};
