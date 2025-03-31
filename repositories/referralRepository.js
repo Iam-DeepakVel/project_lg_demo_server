@@ -4,8 +4,8 @@ export const addReferralEnrollment = async (referrerId, referredUserId, email, n
     const existingReferral = await Referral.findOne({ referrer: referrerId, referredUser: referredUserId });
 
     if (existingReferral) {
-        // Push the new course ID if not already present
-        await Referral.findByIdAndUpdate(existingReferral._id, { $addToSet: { enrolledCourses: courseId } });
+        // Push the new course ID even if already present
+        await Referral.findByIdAndUpdate(existingReferral._id, { $push: { enrolledCourses: courseId } });
     } else {
         // Create a new referral entry
         await Referral.create({

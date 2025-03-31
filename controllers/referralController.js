@@ -22,16 +22,13 @@ export const updateReferralUser = async (req, res) => {
     try {
         const { referralCode } = req.body;
         const userId = req.user; 
-        console.log(userId);
 
         const newReferrer = await findUserByReferralCode(referralCode);
-        console.log(newReferrer);
         if (!newReferrer) {
             return res.status(404).json({ message: "Invalid referral code" });
         }
 
         const user = await findUserById(userId);
-        console.log(user);
         if(!user) {
             return res.status(404).json({ message: "User not found" });
         }

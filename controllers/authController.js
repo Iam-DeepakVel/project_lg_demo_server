@@ -4,11 +4,7 @@ export const register = async (req, res) => {
     try {
         const { name, email, password, phone } = req.body;
         const referralToken = req.headers['x-referral-token'] || null;
-
         const result = await registerUser({ name, email, password, phone, referralToken });
-
-        res.clearCookie('referralToken');
-
         res.status(201).json(result);
     } catch (error) {
         res.status(400).json({ message: error.message });
